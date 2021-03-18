@@ -636,6 +636,52 @@ void Adafruit_SSD1306::drawPixel(int16_t x, int16_t y, uint16_t color) {
   }
 }
 
+
+void Adafruit_SSD1306::drawBlock(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
+	if ((x >= 0) && (x < width()) && (y >= 0) && (y < height()) \		
+		&&(w >= 0) && (w <= width()) && (h >= 0) && (h <= height()) \	
+	) {
+		int i, j;
+		for ( i = 0; i < w; i++ ) {
+			for ( j = 0; j < h; j++ ) {
+				drawPixel(x+i, y+j, color);
+			}
+		}
+	}
+}
+
+/*!
+	pic
+	>------/
+	   /
+    /------>
+*/
+void Adafruit_SSD1306::drawPic(int16_t x, int16_t y, int16_t w, int16_t h, uint8_t *pic, uint16_t color, uint16_t back_color) {
+	if ((x >= 0) && (x < width()) && (y >= 0) && (y < height()) \		
+		&&(w > 0) && (w <= width()) && (h > 0) && (h <= height()) \	
+	) {
+		int i, j, s;
+		for ( j = 0; j < h; j++ ) {
+			s = 8;
+			for ( i = 0; i < w; i++ ) {
+				if (s == 0) {
+					s = 7;
+					pic++;
+				} else {
+					s--;
+				}
+				if (( *pic >> s ) & 0x01) {
+					drawPixel(x+i, y+j, color);
+				} else {
+					drawPixel(x+i, y+j, back_color);
+				}
+			}
+			pic++;
+		}
+	}
+}
+
+
 /*!
     @brief  Clear contents of display buffer (set all pixels to off).
     @return None (void).
